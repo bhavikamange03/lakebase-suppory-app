@@ -16,6 +16,7 @@
     <th>Title</th>
     <th>Status</th>
     <th>Created By</th>
+    <th>Action</th>
 </tr>
 
 
@@ -24,13 +25,23 @@
 <tr>
 
 <td>{{ ticket.ticket_id }}</td>
+
 <td>{{ ticket.title }}</td>
+
 <td>{{ ticket.status }}</td>
+
 <td>{{ ticket.created_by }}</td>
+
+<td>
+    <a href="/ticket/{{ ticket.ticket_id }}">
+        View
+    </a>
+</td>
 
 </tr>
 
 {% endfor %}
+
 
 </table>
 

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ticket Details</title>
+</head>
+
+<body>
+
+
+<h1>
+Ticket #{{ ticket.ticket_id }}
+</h1>
+
+
+<h2>
+{{ ticket.title }}
+</h2>
+
+
+<p>
+Status:
+<b>{{ ticket.status }}</b>
+</p>
+
+
+<p>
+Created By:
+{{ ticket.created_by }}
+</p>
+
+
+<hr>
+
+
+<h2>
+Messages
+</h2>
+
+
+<table border="1">
+
+<tr>
+    <th>Author</th>
+    <th>Message</th>
+    <th>Date</th>
+</tr>
+
+
+{% for message in messages %}
+
+<tr>
+
+<td>
+{{ message.author }}
+</td>
+
+<td>
+{{ message.message_text }}
+</td>
+
+<td>
+{{ message.created_at }}
+</td>
+
+</tr>
+
+{% endfor %}
+
+
+</table>
+
+
+<br>
+
+<a href="/">
+Back to Tickets
+</a>
+
+
+</body>
+
+</html>
