@@ -66,6 +66,8 @@ def create_ticket():
     title = request.form["title"]
     created_by = request.form["created_by"]
     status = request.form["status"]
+    category = request.form["category"]
+    priority = request.form["priority"]
 
 
     run_write("""
@@ -73,11 +75,15 @@ def create_ticket():
         (
             title,
             status,
+            priority,
+            category,
             created_by,
             created_at
         )
         VALUES
         (
+            %s,
+            %s,
             %s,
             %s,
             %s,
@@ -87,6 +93,8 @@ def create_ticket():
     (
         title,
         status,
+        priority,
+        category,
         created_by
     ))
 

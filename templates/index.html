@@ -39,6 +39,50 @@
         </option>
 
     </select>
+<br><br>
+<label>Category:</label>
+
+<select name="category">
+
+    <option value="hardware">
+        Hardware
+    </option>
+
+    <option value="software">
+        Software
+    </option>
+
+    <option value="network">
+        Network
+    </option>
+
+    <option value="access">
+        Access
+    </option>
+
+</select>
+
+<br><br>
+
+    <label>Priority:</label>
+
+        <select name="priority">
+
+            <option value="low">
+                Low
+            </option>
+
+            <option value="medium">
+                Medium
+            </option>
+
+            <option value="high">
+                High
+            </option>
+
+        </select>
+
+
 
     <br><br>
 
@@ -56,8 +100,11 @@
     <th>ID</th>
     <th>Title</th>
     <th>Status</th>
+    <th>Category</th>
+    <th>Priority</th>
     <th>Created By</th>
     <th>Action</th>
+    
 </tr>
 
 
@@ -70,6 +117,10 @@
 <td>{{ ticket.title }}</td>
 
 <td>{{ ticket.status }}</td>
+
+<td> {{ ticket.category }}</td>
+
+<td>{{ ticket.priority}}</td>
 
 <td>{{ ticket.created_by }}</td>
 
