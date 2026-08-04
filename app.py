@@ -5,7 +5,22 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "<h1> Lakebase support app is running! </h1>"
+
+    tickets = run_query("""
+        SELECT 
+            ticket_id,
+            title,
+            status,
+            created_by,
+            created_at
+        FROM tickets
+        ORDER BY ticket_id
+    """)
+
+    return render_template(
+        "index.html",
+        tickets=tickets
+    )
 
 
 if __name__ == '__main__':

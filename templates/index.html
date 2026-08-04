@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Lakebase Support App</title>
+</head>
+
+<body>
+
+<h1>Lakebase Support System</h1>
+
+<table border="1">
+
+<tr>
+    <th>ID</th>
+    <th>Title</th>
+    <th>Status</th>
+    <th>Created By</th>
+</tr>
+
+
+{% for ticket in tickets %}
+
+<tr>
+
+<td>{{ ticket.ticket_id }}</td>
+<td>{{ ticket.title }}</td>
+<td>{{ ticket.status }}</td>
+<td>{{ ticket.created_by }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+
+</html>
