@@ -9,6 +9,47 @@
 
 <h1>Lakebase Support System</h1>
 
+<h2>Create New Ticket</h2>
+
+<form action="/create-ticket" method="POST">
+
+    <label>Title:</label>
+    <input type="text" name="title" required>
+    <br><br>
+
+    <label>Created By:</label>
+    <input type="text" name="created_by" required>
+    <br><br>
+
+
+    <label>Status:</label>
+
+    <select name="status">
+
+        <option value="open">
+            Open
+        </option>
+
+        <option value="in_progress">
+            In Progress
+        </option>
+
+        <option value="resolved">
+            Resolved
+        </option>
+
+    </select>
+
+    <br><br>
+
+    <button type="submit">
+        Create Ticket
+    </button>
+
+</form>
+
+<hr>
+
 <table border="1">
 
 <tr>

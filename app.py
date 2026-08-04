@@ -1,6 +1,6 @@
 import os
-from flask import Flask, render_template
-from lakebase import run_query
+from lakebase import run_query, run_write
+from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
 
@@ -55,7 +55,40 @@ def ticket_detail(ticket_id):
         ticket=ticket[0],
         messages=messages
     )
-    
+
+@app.route("/create-ticket", methods=["POST"])
+def create_ticket():
+
+    title = request.form["title"]
+    created_by = request.form["created_by"]
+    status = request.form["status"]
+
+
+    run_write("""
+        INSERT INTO tickets
+        (
+            title,
+            status,
+            created_by,
+            created_at
+        )
+        VALUES
+        (
+            %s,
+            %s,
+            %s,
+            NOW()
+        )
+    """,
+    (
+        title,
+        status,
+        created_by
+    ))
+
+
+    return redirect("/")
+
 if __name__ == '__main__':
     host = os.getenv('FLASK_RUN_HOST', '0.0.0.0')
     port = int(os.getenv('FLASK_RUN_PORT', 8000))
