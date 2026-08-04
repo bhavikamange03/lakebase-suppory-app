@@ -70,6 +70,40 @@ Messages
 
 </table>
 
+<hr>
+
+<h2>Add Message</h2>
+
+<form action="/ticket/{{ ticket.ticket_id }}/message" method="POST">
+
+    <label>Message:</label>
+    <br>
+
+    <textarea 
+        name="message_text"
+        rows="4"
+        cols="50"
+        required>
+    </textarea>
+
+    <br><br>
+
+
+    <label>Author:</label>
+
+    <input 
+        type="text"
+        name="author"
+        required>
+
+    <br><br>
+
+
+    <button type="submit">
+        Add Message
+    </button>
+
+</form>
 
 <br>
 

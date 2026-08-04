@@ -88,6 +88,44 @@ def create_ticket():
 
 
     return redirect("/")
+    
+@app.route(
+    "/ticket/<int:ticket_id>/message",
+    methods=["POST"]
+)
+def add_message(ticket_id):
+
+    message_text = request.form["message_text"]
+
+    author = request.form["author"]
+
+
+    run_write("""
+        INSERT INTO ticket_messages
+        (
+            ticket_id,
+            message_text,
+            author,
+            created_at
+        )
+        VALUES
+        (
+            %s,
+            %s,
+            %s,
+            NOW()
+        )
+    """,
+    (
+        ticket_id,
+        message_text,
+        author
+    ))
+
+
+    return redirect(
+        f"/ticket/{ticket_id}"
+    )
 
 if __name__ == '__main__':
     host = os.getenv('FLASK_RUN_HOST', '0.0.0.0')
