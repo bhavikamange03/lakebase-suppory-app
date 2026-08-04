@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 from lakebase import run_query
 
 app = Flask(__name__)
