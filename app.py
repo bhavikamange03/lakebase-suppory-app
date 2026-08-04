@@ -88,7 +88,7 @@ def create_ticket():
 
 
     return redirect("/")
-    
+
 @app.route(
     "/ticket/<int:ticket_id>/message",
     methods=["POST"]
@@ -127,6 +127,30 @@ def add_message(ticket_id):
         f"/ticket/{ticket_id}"
     )
 
+@app.route(
+    "/ticket/<int:ticket_id>/status",
+    methods=["POST"]
+)
+def update_status(ticket_id):
+
+    status = request.form["status"]
+
+
+    run_write("""
+        UPDATE tickets
+        SET status = %s
+        WHERE ticket_id = %s
+    """,
+    (
+        status,
+        ticket_id
+    ))
+
+
+    return redirect(
+        f"/ticket/{ticket_id}"
+    )
+    
 if __name__ == '__main__':
     host = os.getenv('FLASK_RUN_HOST', '0.0.0.0')
     port = int(os.getenv('FLASK_RUN_PORT', 8000))
