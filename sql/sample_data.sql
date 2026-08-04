@@ -1,13 +1,13 @@
 INSERT INTO tickets
-(title,status,created_by)
+(title,status,priority,category,created_by)
 
 VALUES
 
-('Not able to login','open','Bhavika'),
+('Not able to login','open','high','access','Bhavika'),
 
-('Keyboard is not working','in_progress','Nidhi'),
+('Keyboard is not working','in_progress','medium','hardware','Nidhi'),
 
-('Not able to connect wi-fi','resolved','Chitra');
+('Not able to connect wi-fi','resolved','low','network','Chitra');
 
 
 INSERT INTO ticket_messages

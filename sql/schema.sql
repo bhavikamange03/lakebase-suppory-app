@@ -6,6 +6,10 @@ CREATE TABLE tickets (
 
     status TEXT NOT NULL,
 
+    priority TEXT DEFAULT 'medium',
+
+    category TEXT DEFAULT 'general',
+
     created_by TEXT,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

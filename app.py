@@ -12,6 +12,8 @@ def home():
             ticket_id,
             title,
             status,
+            priority,
+            category,
             created_by,
             created_at
         FROM tickets
@@ -31,6 +33,8 @@ def ticket_detail(ticket_id):
             ticket_id,
             title,
             status,
+            priority,
+            category,
             created_by,
             created_at
         FROM tickets
@@ -143,6 +147,54 @@ def update_status(ticket_id):
     """,
     (
         status,
+        ticket_id
+    ))
+
+
+    return redirect(
+        f"/ticket/{ticket_id}"
+    )
+
+@app.route(
+    "/ticket/<int:ticket_id>/priority",
+    methods=["POST"]
+)
+def update_priority(ticket_id):
+
+    priority = request.form["priority"]
+
+
+    run_write("""
+        UPDATE tickets
+        SET priority = %s
+        WHERE ticket_id = %s
+    """,
+    (
+        priority,
+        ticket_id
+    ))
+
+
+    return redirect(
+        f"/ticket/{ticket_id}"
+    )
+
+@app.route(
+    "/ticket/<int:ticket_id>/category",
+    methods=["POST"]
+)
+def update_category(ticket_id):
+
+    category = request.form["category"]
+
+
+    run_write("""
+        UPDATE tickets
+        SET category = %s
+        WHERE ticket_id = %s
+    """,
+    (
+        category,
         ticket_id
     ))
 
