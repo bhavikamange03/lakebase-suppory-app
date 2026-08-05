@@ -99,7 +99,17 @@
 <tr>
     <th>ID</th>
     <th>Title</th>
-    <th>Status</th>
+    <th>
+        Status
+        <form action="/" method="GET" style="display:inline; margin-left:10px;">
+            <select name="status" onchange="this.form.submit()" style="font-size:12px;">
+                <option value="all" {% if filter_status == 'all' %}selected{% endif %}>🔽 All</option>
+                <option value="open" {% if filter_status == 'open' %}selected{% endif %}>🔽 Open</option>
+                <option value="in_progress" {% if filter_status == 'in_progress' %}selected{% endif %}>🔽 In Progress</option>
+                <option value="resolved" {% if filter_status == 'resolved' %}selected{% endif %}>🔽 Resolved</option>
+            </select>
+        </form>
+    </th>
     <th>Category</th>
     <th>Priority</th>
     <th>Created By</th>

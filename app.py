@@ -7,22 +7,40 @@ app = Flask(__name__)
 @app.route("/")
 def home():
 
-    tickets = run_query("""
-        SELECT 
-            ticket_id,
-            title,
-            status,
-            priority,
-            category,
-            created_by,
-            created_at
-        FROM tickets
-        ORDER BY ticket_id
-    """)
+    filter_status = request.args.get('status', 'all')
+
+    if filter_status == 'all':
+        tickets = run_query("""
+            SELECT 
+                ticket_id,
+                title,
+                status,
+                priority,
+                category,
+                created_by,
+                created_at
+            FROM tickets
+            ORDER BY ticket_id
+        """)
+    else:
+        tickets = run_query("""
+            SELECT 
+                ticket_id,
+                title,
+                status,
+                priority,
+                category,
+                created_by,
+                created_at
+            FROM tickets
+            WHERE status = %s
+            ORDER BY ticket_id
+        """, (filter_status,))
 
     return render_template(
         "index.html",
-        tickets=tickets
+        tickets=tickets,
+        filter_status=filter_status
     )
 
 @app.route("/ticket/<int:ticket_id>")
