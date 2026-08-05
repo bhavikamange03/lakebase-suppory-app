@@ -37,10 +37,50 @@ def home():
             ORDER BY ticket_id
         """, (filter_status,))
 
+    # Fetch statistics
+    stats = {}
+    
+    # Total tickets
+    total_result = run_query("SELECT COUNT(*) as total FROM tickets")
+    stats['total'] = total_result[0]['total'] if total_result else 0
+    
+    # Tickets by status
+    status_stats = run_query("""
+        SELECT status, COUNT(*) as count
+        FROM tickets
+        GROUP BY status
+    """)
+    stats['by_status'] = {row['status']: row['count'] for row in status_stats} if status_stats else {}
+    
+    # Tickets by priority
+    priority_stats = run_query("""
+        SELECT priority, COUNT(*) as count
+        FROM tickets
+        GROUP BY priority
+    """)
+    stats['by_priority'] = {row['priority']: row['count'] for row in priority_stats} if priority_stats else {}
+    
+    # Tickets by category
+    category_stats = run_query("""
+        SELECT category, COUNT(*) as count
+        FROM tickets
+        GROUP BY category
+    """)
+    stats['by_category'] = {row['category']: row['count'] for row in category_stats} if category_stats else {}
+    
+    # Recent activity (tickets created in last 7 days)
+    recent_result = run_query("""
+        SELECT COUNT(*) as recent
+        FROM tickets
+        WHERE created_at >= NOW() - INTERVAL '7 days'
+    """)
+    stats['recent_7_days'] = recent_result[0]['recent'] if recent_result else 0
+
     return render_template(
         "index.html",
         tickets=tickets,
-        filter_status=filter_status
+        filter_status=filter_status,
+        stats=stats
     )
 
 @app.route("/ticket/<int:ticket_id>")
