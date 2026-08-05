@@ -9,6 +9,19 @@
 
 <h1>Lakebase Support System</h1>
 
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="margin: 20px 0;">
+    {% for category, message in messages %}
+      <div style="padding: 10px; margin: 5px 0; border-radius: 4px; {% if category == 'error' %}background-color: #ffebee; color: #c62828; border: 1px solid #ef5350;{% else %}background-color: #e8f5e9; color: #2e7d32; border: 1px solid #66bb6a;{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
 <h2>Create New Ticket</h2>
 
 <form action="/create-ticket" method="POST">
