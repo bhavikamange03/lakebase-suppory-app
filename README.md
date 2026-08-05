@@ -1,21 +1,99 @@
-# Massive + Lakebase Databricks App Boilerplate
+# Lakebase Support App
 
-A minimal Databricks App that:
-- Connects to **Lakebase** (Databricks-managed Postgres) using a single `LAKEBASE_URL` secret (a native Postgres role with a static password)
-- Calls the **Massive API** (large paginated dataset) using a key stored in a Databricks secret scope
-- Syncs Massive API data into Lakebase in batches
-- Exposes a small Flask API to trigger syncs and read synced records
+A cloud-native support ticket management application built using **Databricks Apps**, **Lakebase (Databricks-managed PostgreSQL)**, and **Flask**.
 
-## Files
+This project demonstrates how to build a real-time CRUD application backed by Lakebase for storing and managing operational support ticket data.
 
-- `app.py` - Flask app: `/healthz`, `/records` (GET), `/sync` (POST)
-- `lakebase.py` - Lakebase connection helper (single `LAKEBASE_URL`, psycopg2 + SQLAlchemy)
-- `massive_client.py` - Massive API client with pagination generator for large datasets
-- `setup_secrets.py` - One-time script to create the secret scopes and store the Massive API key + Lakebase URL
-- `app.yaml` - Databricks App deployment config (command + env vars)
-- `.env.example` - Local dev env var template (copy to `.env`, do not commit real values)
+---
 
-## Step-by-step setup
+## Features
+
+### Core Functionality
+* ✅ **View all support tickets** with filtering by status
+* ✅ **View ticket details** and complete message history
+* ✅ **Create new support tickets** with validation
+* ✅ **Add messages** to existing tickets
+* ✅ **Update ticket status** in real-time
+* ✅ **Delete tickets** with confirmation dialog (includes cascade delete of messages)
+* ✅ **Real-time read and write operations** backed by Lakebase
+
+### Statistics & Analytics Dashboard
+* ✅ **Comprehensive Statistics Overview Table**
+  - Total tickets count
+  - Tickets by status (Open, In Progress, Resolved, Closed)
+  - New tickets in last 7 days
+* ✅ **Priority Breakdown Table**
+  - Count and percentage by priority level (Critical, High, Medium, Low)
+* ✅ **Category Breakdown Table**
+  - Count and percentage by category (Bug, Feature, Support, Question)
+
+### User Experience
+* ✅ **Modern, responsive UI** with vibrant gradient color scheme
+* ✅ **Flash messages** for user feedback (success/error notifications)
+* ✅ **Input validation** with helpful error messages
+* ✅ **Status badges** and **priority badges** for visual clarity
+* ✅ **Mobile-responsive design** with optimized layouts
+* ✅ **Smooth animations** and hover effects
+
+---
+
+## Tech Stack
+
+* **Backend**: Python 3.x, Flask
+* **Database**: Lakebase (Databricks-managed PostgreSQL)
+* **Deployment**: Databricks Apps
+* **Frontend**: HTML5, CSS3 (with modern gradients and animations)
+* **Fonts**: Google Fonts (Inter)
+
+---
+
+## Database Schema
+
+### `tickets`
+
+| Column       | Type         | Description                                 |
+| ------------ | ------------ | ------------------------------------------- |
+| `ticket_id`  | SERIAL       | Primary Key                                 |
+| `title`      | VARCHAR(200) | Support ticket title                        |
+| `status`     | VARCHAR(50)  | Ticket status (open, in_progress, resolved, closed) |
+| `priority`   | VARCHAR(50)  | Ticket priority (low, medium, high, critical) |
+| `category`   | VARCHAR(50)  | Ticket category (bug, feature, support, question) |
+| `created_by` | VARCHAR(100) | User who created the ticket                 |
+| `created_at` | TIMESTAMP    | Ticket creation timestamp                   |
+
+### `ticket_messages`
+
+| Column         | Type         | Description                                 |
+| -------------- | ------------ | ------------------------------------------- |
+| `message_id`   | SERIAL       | Primary Key                                 |
+| `ticket_id`    | INTEGER      | Foreign Key referencing `tickets.ticket_id` (CASCADE DELETE) |
+| `message_text` | TEXT         | Support message content                     |
+| `author`       | VARCHAR(100) | Message author                              |
+| `created_at`   | TIMESTAMP    | Message timestamp                           |
+
+---
+
+## Project Structure
+
+```text
+lakebase-support-app/
+│
+├── app.py                      # Main Flask application with routes
+├── lakebase.py                 # Database connection helper
+├── requirements.txt            # Python dependencies
+├── schema.sql                  # Database schema definition
+├── README.md                   # Project documentation
+├── STATISTICS_GUIDE.md         # Statistics feature documentation
+├── test_stats.py               # Database statistics test script
+│
+└── templates/
+    ├── index.html              # Home page with statistics & ticket list
+    └── ticket.html             # Ticket detail page with messages
+```
+
+---
+
+## Running the Application
 
 ### 1. Create a Massive.com account and get an API key
 
