@@ -15,7 +15,7 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
             min-height: 100vh;
             padding: 20px;
             color: #333;
@@ -31,7 +31,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
             color: white;
             padding: 40px;
             text-align: center;
@@ -455,163 +455,265 @@
 </head>
 
 <body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎫 Lakebase Support System</h1>
+            <p>Manage and track your support tickets efficiently</p>
+        </div>
 
-<h1>Lakebase Support System</h1>
+        <div class="content">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash {{ category }}">
+                                <span>{% if category == 'error' %}⚠️{% else %}✅{% endif %}</span>
+                                <span>{{ message }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
 
-<!-- Flash Messages -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div style="margin: 20px 0;">
-    {% for category, message in messages %}
-      <div style="padding: 10px; margin: 5px 0; border-radius: 4px; {% if category == 'error' %}background-color: #ffebee; color: #c62828; border: 1px solid #ef5350;{% else %}background-color: #e8f5e9; color: #2e7d32; border: 1px solid #66bb6a;{% endif %}">
-        {{ message }}
-      </div>
-    {% endfor %}
+            <!-- Statistics Overview Table -->
+            <div class="section">
+                <h2>📊 Ticket Statistics Overview</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Count</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Total Tickets</strong></td>
+                            <td><span class="stat-value" style="font-size: 18px;">{{ stats.total }}</span></td>
+                            <td>All tickets in the system</td>
+                        </tr>
+                        <tr>
+                            <td><strong>📂 Open</strong></td>
+                            <td><span class="status-badge status-open">{{ stats.by_status.get('open', 0) }}</span></td>
+                            <td>New tickets awaiting action</td>
+                        </tr>
+                        <tr>
+                            <td><strong>🔄 In Progress</strong></td>
+                            <td><span class="status-badge status-in_progress">{{ stats.by_status.get('in_progress', 0) }}</span></td>
+                            <td>Currently being worked on</td>
+                        </tr>
+                        <tr>
+                            <td><strong>✅ Resolved</strong></td>
+                            <td><span class="status-badge status-resolved">{{ stats.by_status.get('resolved', 0) }}</span></td>
+                            <td>Successfully resolved tickets</td>
+                        </tr>
+                        <tr>
+                            <td><strong>🔒 Closed</strong></td>
+                            <td><span class="status-badge status-closed">{{ stats.by_status.get('closed', 0) }}</span></td>
+                            <td>Completed and closed tickets</td>
+                        </tr>
+                        <tr style="background-color: #fef3c7;">
+                            <td><strong>🆕 New (Last 7 Days)</strong></td>
+                            <td><span class="stat-value" style="font-size: 18px; color: #f59e0b;">{{ stats.recent_7_days }}</span></td>
+                            <td>Tickets created in the past week</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <br>
+
+                <!-- Priority Breakdown Table -->
+                <h2 style="margin-top: 30px;">⚡ Priority Breakdown</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Priority Level</th>
+                            <th>Count</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="priority-badge priority-critical">🔥 Critical</span></td>
+                            <td>{{ stats.by_priority.get('critical', 0) }}</td>
+                            <td>{% if stats.total > 0 %}{{ "%.1f"|format((stats.by_priority.get('critical', 0) / stats.total * 100)) }}%{% else %}0.0%{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <td><span class="priority-badge priority-high">⚠️ High</span></td>
+                            <td>{{ stats.by_priority.get('high', 0) }}</td>
+                            <td>{% if stats.total > 0 %}{{ "%.1f"|format((stats.by_priority.get('high', 0) / stats.total * 100)) }}%{% else %}0.0%{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <td><span class="priority-badge priority-medium">📊 Medium</span></td>
+                            <td>{{ stats.by_priority.get('medium', 0) }}</td>
+                            <td>{% if stats.total > 0 %}{{ "%.1f"|format((stats.by_priority.get('medium', 0) / stats.total * 100)) }}%{% else %}0.0%{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <td><span class="priority-badge priority-low">✨ Low</span></td>
+                            <td>{{ stats.by_priority.get('low', 0) }}</td>
+                            <td>{% if stats.total > 0 %}{{ "%.1f"|format((stats.by_priority.get('low', 0) / stats.total * 100)) }}%{% else %}0.0%{% endif %}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <br>
+
+                <!-- Category Breakdown Table -->
+                <h2 style="margin-top: 30px;">🏷️ Category Breakdown</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Count</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🐛 Bug</td>
+                            <td>{{ stats.by_category.get('bug', 0) }}</td>
+                            <td>{% if stats.total > 0 %}{{ "%.1f"|format((stats.by_category.get('bug', 0) / stats.total * 100)) }}%{% else %}0.0%{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <td>✨ Feature</td>
+                            <td>{{ stats.by_category.get('feature', 0) }}</td>
+                            <td>{% if stats.total > 0 %}{{ "%.1f"|format((stats.by_category.get('feature', 0) / stats.total * 100)) }}%{% else %}0.0%{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <td>🆘 Support</td>
+                            <td>{{ stats.by_category.get('support', 0) }}</td>
+                            <td>{% if stats.total > 0 %}{{ "%.1f"|format((stats.by_category.get('support', 0) / stats.total * 100)) }}%{% else %}0.0%{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <td>❓ Question</td>
+                            <td>{{ stats.by_category.get('question', 0) }}</td>
+                            <td>{% if stats.total > 0 %}{{ "%.1f"|format((stats.by_category.get('question', 0) / stats.total * 100)) }}%{% else %}0.0%{% endif %}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Create Ticket Form -->
+            <div class="section">
+                <h2>✨ Create New Ticket</h2>
+                <form action="/create-ticket" method="POST">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" id="title" name="title" placeholder="Brief description of the issue" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="created_by">Created By</label>
+                            <input type="text" id="created_by" name="created_by" placeholder="Your name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select id="status" name="status" required>
+                                <option value="open">Open</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="resolved">Resolved</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" name="category" required>
+                                <option value="bug">Bug</option>
+                                <option value="feature">Feature</option>
+                                <option value="support">Support</option>
+                                <option value="question">Question</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="priority">Priority</label>
+                            <select id="priority" name="priority" required>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                                <option value="critical">Critical</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        🎫 Create Ticket
+                    </button>
+                </form>
+            </div>
+
+            <!-- All Tickets Table -->
+            <div class="table-header">
+                <h2>📋 All Tickets</h2>
+                <form action="/" method="GET" class="filter-form">
+                    <label for="filter">Filter:</label>
+                    <select id="filter" name="status" onchange="this.form.submit()">
+                        <option value="all" {% if filter_status == 'all' %}selected{% endif %}>All Status</option>
+                        <option value="open" {% if filter_status == 'open' %}selected{% endif %}>Open</option>
+                        <option value="in_progress" {% if filter_status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                        <option value="resolved" {% if filter_status == 'resolved' %}selected{% endif %}>Resolved</option>
+                        <option value="closed" {% if filter_status == 'closed' %}selected{% endif %}>Closed</option>
+                    </select>
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Category</th>
+                        <th>Created By</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if tickets %}
+                        {% for ticket in tickets %}
+                        <tr>
+                            <td><strong>#{{ ticket.ticket_id }}</strong></td>
+                            <td>{{ ticket.title }}</td>
+                            <td>
+                                <span class="status-badge status-{{ ticket.status }}">
+                                    {{ ticket.status.replace('_', ' ').title() }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="priority-badge priority-{{ ticket.priority }}">
+                                    {{ ticket.priority.title() }}
+                                </span>
+                            </td>
+                            <td>{{ ticket.category.title() }}</td>
+                            <td>{{ ticket.created_by }}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="/ticket/{{ ticket.ticket_id }}" class="btn-view">👁️ View</a>
+                                    <form action="/ticket/{{ ticket.ticket_id }}/delete" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete ticket #{{ ticket.ticket_id }}? This action cannot be undone.')">
+                                        <button type="submit" class="delete-btn">🗑️ Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 40px; color: #999;">
+                                <strong>No tickets found</strong><br>
+                                <small>Create your first ticket using the form above!</small>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
     </div>
-  {% endif %}
-{% endwith %}
-
-<h2>Create New Ticket</h2>
-
-<form action="/create-ticket" method="POST">
-
-    <label>Title:</label>
-    <input type="text" name="title" required>
-    <br><br>
-
-    <label>Created By:</label>
-    <input type="text" name="created_by" required>
-    <br><br>
-
-
-    <label>Status:</label>
-
-    <select name="status">
-
-        <option value="open">
-            Open
-        </option>
-
-        <option value="in_progress">
-            In Progress
-        </option>
-
-        <option value="resolved">
-            Resolved
-        </option>
-
-    </select>
-<br><br>
-<label>Category:</label>
-
-<select name="category">
-
-    <option value="hardware">
-        Hardware
-    </option>
-
-    <option value="software">
-        Software
-    </option>
-
-    <option value="network">
-        Network
-    </option>
-
-    <option value="access">
-        Access
-    </option>
-
-</select>
-
-<br><br>
-
-    <label>Priority:</label>
-
-        <select name="priority">
-
-            <option value="low">
-                Low
-            </option>
-
-            <option value="medium">
-                Medium
-            </option>
-
-            <option value="high">
-                High
-            </option>
-
-        </select>
-
-
-
-    <br><br>
-
-    <button type="submit">
-        Create Ticket
-    </button>
-
-</form>
-
-<hr>
-
-<table border="1">
-
-<tr>
-    <th>ID</th>
-    <th>Title</th>
-    <th>
-        Status
-        <form action="/" method="GET" style="display:inline; margin-left:10px;">
-            <select name="status" onchange="this.form.submit()" style="font-size:12px;">
-                <option value="all" {% if filter_status == 'all' %}selected{% endif %}>🔽 All</option>
-                <option value="open" {% if filter_status == 'open' %}selected{% endif %}>🔽 Open</option>
-                <option value="in_progress" {% if filter_status == 'in_progress' %}selected{% endif %}>🔽 In Progress</option>
-                <option value="resolved" {% if filter_status == 'resolved' %}selected{% endif %}>🔽 Resolved</option>
-            </select>
-        </form>
-    </th>
-    <th>Category</th>
-    <th>Priority</th>
-    <th>Created By</th>
-    <th>Action</th>
-    
-</tr>
-
-
-{% for ticket in tickets %}
-
-<tr>
-
-<td>{{ ticket.ticket_id }}</td>
-
-<td>{{ ticket.title }}</td>
-
-<td>{{ ticket.status }}</td>
-
-<td> {{ ticket.category }}</td>
-
-<td>{{ ticket.priority}}</td>
-
-<td>{{ ticket.created_by }}</td>
-
-<td>
-    <a href="/ticket/{{ ticket.ticket_id }}">
-        View
-    </a>
-    <form action="/ticket/{{ ticket.ticket_id }}/delete" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete ticket #{{ ticket.ticket_id }}: {{ ticket.title }}?\n\nThis will also delete all messages associated with this ticket. This action cannot be undone.');">
-        <button type="submit" class="delete-btn">Delete</button>
-    </form>
-</td>
-
-</tr>
-
-{% endfor %}
-
-
-</table>
-
 </body>
 
 </html>
