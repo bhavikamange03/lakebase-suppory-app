@@ -165,6 +165,9 @@
     <a href="/ticket/{{ ticket.ticket_id }}">
         View
     </a>
+    <form action="/ticket/{{ ticket.ticket_id }}/delete" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete ticket #{{ ticket.ticket_id }}: {{ ticket.title }}?\n\nThis will also delete all messages associated with this ticket. This action cannot be undone.');">
+        <button type="submit" class="delete-btn">Delete</button>
+    </form>
 </td>
 
 </tr>

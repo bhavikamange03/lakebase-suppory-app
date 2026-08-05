@@ -55,6 +55,9 @@ Ticket #{{ ticket.ticket_id }}
 {{ ticket.title }}
 </h2>
 
+<form action="/ticket/{{ ticket.ticket_id }}/delete" method="POST" style="display:inline;" onsubmit="return confirm('⚠️ DELETE TICKET #{{ ticket.ticket_id }}?\n\nTitle: {{ ticket.title }}\n\nThis will permanently delete:\n• The ticket\n• All {{ messages|length }} message(s)\n\nThis action CANNOT be undone. Are you sure?');">
+    <button type="submit" class="delete-btn">🗑️ Delete Ticket</button>
+</form>
 
 <p>
 Status:
