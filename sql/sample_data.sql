@@ -3,11 +3,15 @@ INSERT INTO tickets
 
 VALUES
 
-('Not able to login','open','high','access','Bhavika'),
+('Not able to login','open','high','bug','Bhavika'),
 
-('Keyboard is not working','in_progress','medium','hardware','Nidhi'),
+('Keyboard is not working','in_progress','medium','bug','Nidhi'),
 
-('Not able to connect wi-fi','resolved','low','network','Chitra');
+('Not able to connect wi-fi','resolved','low','bug','Chitra'),
+
+('Add dark mode feature','open','medium','feature','Alice'),
+
+('How to reset password?','closed','low','question','Bob');
 
 
 INSERT INTO ticket_messages

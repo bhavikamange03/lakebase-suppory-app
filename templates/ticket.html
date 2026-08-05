@@ -396,156 +396,125 @@
 
 <body>
 
-<!-- Flash Messages -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div style="margin: 20px 0;">
-    {% for category, message in messages %}
-      <div style="padding: 10px; margin: 5px 0; border-radius: 4px; {% if category == 'error' %}background-color: #ffebee; color: #c62828; border: 1px solid #ef5350;{% else %}background-color: #e8f5e9; color: #2e7d32; border: 1px solid #66bb6a;{% endif %}">
-        {{ message }}
-      </div>
-    {% endfor %}
+<div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <h1>🎫 Ticket #{{ ticket.ticket_id }}</h1>
+                <a href="/" class="back-link">← Back to All Tickets</a>
+            </div>
+            <div class="ticket-title">{{ ticket.title }}</div>
+            <div class="ticket-meta">
+                <div class="meta-item">
+                    <span>📌 Status:</span>
+                    <span class="status-badge status-{{ ticket.status }}">{{ ticket.status.replace('_', ' ').title() }}</span>
+                </div>
+                <div class="meta-item">
+                    <span>⚡ Priority:</span>
+                    <span class="priority-badge priority-{{ ticket.priority }}">{{ ticket.priority.title() }}</span>
+                </div>
+                <div class="meta-item">
+                    <span>🏷️ Category:</span>
+                    <span class="category-badge">{{ ticket.category.title() }}</span>
+                </div>
+                <div class="meta-item">
+                    <span>👤 Created by:</span>
+                    <strong>{{ ticket.created_by }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash {{ category }}">
+                                <span>{% if category == 'error' %}⚠️{% else %}✅{% endif %}</span>
+                                <span>{{ message }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Delete Ticket Button -->
+            <form action="/ticket/{{ ticket.ticket_id }}/delete" method="POST" style="margin-bottom: 30px;" onsubmit="return confirm('⚠️ DELETE TICKET #{{ ticket.ticket_id }}?\n\nTitle: {{ ticket.title }}\n\nThis will permanently delete:\n• The ticket\n• All {{ messages|length }} message(s)\n\nThis action CANNOT be undone. Are you sure?');">
+                <button type="submit" class="delete-ticket-btn">🗑️ Delete This Ticket</button>
+            </form>
+
+            <!-- Update Status Section -->
+            <div class="section">
+                <h2>🔄 Update Ticket Status</h2>
+                <form action="/ticket/{{ ticket.ticket_id }}/status" method="POST" class="update-form">
+                    <div class="form-group">
+                        <label for="status">New Status</label>
+                        <select id="status" name="status" required>
+                            <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Open</option>
+                            <option value="in_progress" {% if ticket.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                            <option value="resolved" {% if ticket.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                            <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Closed</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">✅ Update Status</button>
+                </form>
+            </div>
+
+            <!-- Messages Section -->
+            <div class="messages-container">
+                <h2 style="margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
+                    💬 Conversation ({{ messages|length }} message{% if messages|length != 1 %}s{% endif %})
+                </h2>
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="message">
+                            <div class="message-header">
+                                <span class="message-author">👤 {{ message.author }}</span>
+                                <span class="message-date">{{ message.created_at.strftime('%b %d, %Y at %I:%M %p') if message.created_at else 'Unknown date' }}</span>
+                            </div>
+                            <div class="message-text">{{ message.message_text }}</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-messages">
+                        <strong>No messages yet</strong><br>
+                        <small>Be the first to add a message to this ticket!</small>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Add Message Section -->
+            <div class="section">
+                <h2>✍️ Add New Message</h2>
+                <form action="/ticket/{{ ticket.ticket_id }}/message" method="POST">
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="message_text">Message</label>
+                        <textarea 
+                            id="message_text"
+                            name="message_text"
+                            placeholder="Type your message here..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="author">Your Name</label>
+                        <input 
+                            type="text"
+                            id="author"
+                            name="author"
+                            placeholder="Enter your name"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">📤 Send Message</button>
+                </form>
+            </div>
+        </div>
     </div>
-  {% endif %}
-{% endwith %}
-
-<h1>
-Ticket #{{ ticket.ticket_id }}
-</h1>
-
-
-<h2>
-{{ ticket.title }}
-</h2>
-
-<form action="/ticket/{{ ticket.ticket_id }}/delete" method="POST" style="display:inline;" onsubmit="return confirm('⚠️ DELETE TICKET #{{ ticket.ticket_id }}?\n\nTitle: {{ ticket.title }}\n\nThis will permanently delete:\n• The ticket\n• All {{ messages|length }} message(s)\n\nThis action CANNOT be undone. Are you sure?');">
-    <button type="submit" class="delete-btn">🗑️ Delete Ticket</button>
-</form>
-
-<p>
-Status:
-<b>{{ ticket.status }}</b>
-</p>
-
-
-<p>
-Created By:
-{{ ticket.created_by }}
-</p>
-
-
-<hr>
-
-<h2>Update Status</h2>
-
-<form action="/ticket/{{ ticket.ticket_id }}/status" method="POST">
-
-    <label>Status:</label>
-
-    <select name="status">
-
-        <option value="open">
-            Open
-        </option>
-
-        <option value="in_progress">
-            In Progress
-        </option>
-
-        <option value="resolved">
-            Resolved
-        </option>
-
-    </select>
-
-    <br><br>
-
-    <button type="submit">
-        Update Status
-    </button>
-
-</form>
-
-<hr>
-
-
-<h2>
-Messages
-</h2>
-
-
-<table border="1">
-
-<tr>
-    <th>Author</th>
-    <th>Message</th>
-    <th>Date</th>
-</tr>
-
-
-{% for message in messages %}
-
-<tr>
-
-<td>
-{{ message.author }}
-</td>
-
-<td>
-{{ message.message_text }}
-</td>
-
-<td>
-{{ message.created_at }}
-</td>
-
-</tr>
-
-{% endfor %}
-
-
-</table>
-
-<hr>
-
-<h2>Add Message</h2>
-
-<form action="/ticket/{{ ticket.ticket_id }}/message" method="POST">
-
-    <label>Message:</label>
-    <br>
-
-    <textarea 
-        name="message_text"
-        rows="4"
-        cols="50"
-        required>
-    </textarea>
-
-    <br><br>
-
-
-    <label>Author:</label>
-
-    <input 
-        type="text"
-        name="author"
-        required>
-
-    <br><br>
-
-
-    <button type="submit">
-        Add Message
-    </button>
-
-</form>
-
-<br>
-
-<a href="/">
-Back to Tickets
-</a>
 
 
 </body>

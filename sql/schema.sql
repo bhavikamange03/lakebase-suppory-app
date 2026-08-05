@@ -4,11 +4,11 @@ CREATE TABLE tickets (
 
     title TEXT NOT NULL,
 
-    status TEXT NOT NULL,
+    status TEXT NOT NULL CHECK (status IN ('open', 'in_progress', 'resolved', 'closed')),
 
-    priority TEXT DEFAULT 'medium',
+    priority TEXT DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high', 'critical')),
 
-    category TEXT DEFAULT 'general',
+    category TEXT DEFAULT 'support' CHECK (category IN ('bug', 'feature', 'support', 'question')),
 
     created_by TEXT,
 
