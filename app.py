@@ -1,6 +1,6 @@
 import os
 from lakebase import run_query, run_write
-from flask import Flask, render_template, request, redirect, flash, abort
+from flask import Flask, render_template, request, redirect, flash, abort, jsonify
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
