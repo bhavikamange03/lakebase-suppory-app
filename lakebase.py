@@ -52,20 +52,29 @@ def get_connection():
     finally:
         conn.close()
 
+def run_query(query, params=None):
+    conn = get_connection()
 
-cursor = conn.cursor()
+    cursor = conn.cursor()
 
-cursor.execute("SELECT current_database();")
-print("DATABASE:", cursor.fetchone())
+    cursor.execute("SELECT current_database();")
+    print("DATABASE:", cursor.fetchone())
 
-cursor.execute("""
-SELECT table_name 
-FROM information_schema.tables
-WHERE table_schema='public'
-""")
+    cursor.execute("""
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema='public'
+    """)
+    print("TABLES:", cursor.fetchall())
 
-print("TABLES:", cursor.fetchall())
+    cursor.execute(query, params)
+    results = cursor.fetchall()
 
+    cursor.close()
+    conn.close()
+
+    return results
+    
 def run_query(sql, params=None):
 
     with get_connection() as conn:
