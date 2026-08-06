@@ -53,6 +53,18 @@ def get_connection():
         conn.close()
 
 
+cursor = conn.cursor()
+
+cursor.execute("SELECT current_database();")
+print("DATABASE:", cursor.fetchone())
+
+cursor.execute("""
+SELECT table_name 
+FROM information_schema.tables
+WHERE table_schema='public'
+""")
+
+print("TABLES:", cursor.fetchall())
 
 def run_query(sql, params=None):
 
