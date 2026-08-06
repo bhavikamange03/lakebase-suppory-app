@@ -52,42 +52,19 @@ def get_connection():
     finally:
         conn.close()
 
-def run_query(query, params=None):
+    
+def run_query(sql, params=None):
 
     with get_connection() as conn:
 
-        cursor = conn.cursor()
+        with conn.cursor() as cursor:
 
-        cursor.execute("SELECT current_database();")
-        print("DATABASE:", cursor.fetchone())
+            cursor.execute(
+                sql,
+                params
+            )
 
-        cursor.execute("""
-            SELECT table_name
-            FROM information_schema.tables
-            WHERE table_schema='public'
-        """)
-        print("TABLES:", cursor.fetchall())
-
-        cursor.execute(query, params)
-
-        results = cursor.fetchall()
-
-        cursor.close()
-
-        return results
-    
-# def run_query(sql, params=None):
-
-#     with get_connection() as conn:
-
-#         with conn.cursor() as cursor:
-
-#             cursor.execute(
-#                 sql,
-#                 params
-#             )
-
-#             return cursor.fetchall()
+            return cursor.fetchall()
 
 
 
