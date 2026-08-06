@@ -11,7 +11,7 @@ except Exception:
 
 w.secrets.put_secret(
     scope="database",
-    key="lakebase-url",
+    key="support-lakebase-url",
     string_value=getpass.getpass("Paste your Lakebase URL: ")
 )
 

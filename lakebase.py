@@ -22,7 +22,7 @@ SCOPE = os.getenv(
 
 KEY = os.getenv(
     "LAKEBASE_SECRET_KEY",
-    "lakebase-url"
+    "support-lakebase-url"
 )
 
 
