@@ -57,6 +57,7 @@ def run_query(query, params=None):
 
     cursor = conn.cursor()
 
+    # DEBUG HERE
     cursor.execute("SELECT current_database();")
     print("DATABASE:", cursor.fetchone())
 
@@ -67,7 +68,9 @@ def run_query(query, params=None):
     """)
     print("TABLES:", cursor.fetchall())
 
+    # YOUR ORIGINAL QUERY
     cursor.execute(query, params)
+
     results = cursor.fetchall()
 
     cursor.close()
@@ -75,18 +78,18 @@ def run_query(query, params=None):
 
     return results
     
-def run_query(sql, params=None):
+# def run_query(sql, params=None):
 
-    with get_connection() as conn:
+#     with get_connection() as conn:
 
-        with conn.cursor() as cursor:
+#         with conn.cursor() as cursor:
 
-            cursor.execute(
-                sql,
-                params
-            )
+#             cursor.execute(
+#                 sql,
+#                 params
+#             )
 
-            return cursor.fetchall()
+#             return cursor.fetchall()
 
 
 
